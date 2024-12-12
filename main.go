@@ -25,6 +25,8 @@ func main() {
 	router.POST("/createUser", routes.CreateUserHandler)
 	router.GET("/getUserData", routes.GetUserDataHandler)
 	router.POST("/createGroup", routes.CreateGroupHandler)
+	router.POST("/addToGroup", routes.AddToGroupHandler)
+	router.POST("/addExpense", routes.AddExpenseHandler)
 
 	http.ListenAndServe(config.GetAddress(), router)
 

@@ -9,19 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateGroupHandler(c *gin.Context) {
+func AddExpenseHandler(c *gin.Context) {
 	body, _ := io.ReadAll(c.Request.Body)
 	defer c.Request.Body.Close()
-	var requestBody models.CreateGroupPayload
+	var requestBody models.AddExpensePayload
 	json.Unmarshal(body, &requestBody)
-	IsUserCreated := db.CreateNewGroup(requestBody)
+	IsUserCreated := db.AddExpense(requestBody)
 	if IsUserCreated {
 		c.JSON(200, gin.H{
-			"message": "Group Created",
+			"message": "Added Expense",
 		})
 	} else {
 		c.JSON(200, gin.H{
-			"message": "failed to create group",
+			"message": "Failed To Add Expense",
 		})
 	}
 }
