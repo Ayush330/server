@@ -28,3 +28,13 @@ type ExpenseSplitPayload struct {
 	UserId int `json:"user_id"`
 	Amount int `json:"amount"`
 }
+
+type ExpenseDetailsUserGroupPayload struct {
+	UserID  int `json:"user_id"`
+	GroupId int `json:"group_id"`
+}
+
+type MoneyInTransit struct {
+	UserID         int     `json:"user_id"`
+	MoneyInTransit float64 `json:"user_balance"`
+}
