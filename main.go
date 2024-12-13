@@ -27,7 +27,7 @@ func main() {
 	router.POST("/createGroup", routes.CreateGroupHandler)
 	router.POST("/addToGroup", routes.AddToGroupHandler)
 	router.POST("/addExpense", routes.AddExpenseHandler)
-
+	router.POST("/getNetExpenseDetailsForAUserAndAGroup", routes.GetNetExpenseForAUserAndGroupHandler)
 	http.ListenAndServe(config.GetAddress(), router)
 
 }

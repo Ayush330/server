@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/Ayush330/server/models"
 	"github.com/sirupsen/logrus"
@@ -73,6 +74,40 @@ func AddExpense(payload models.AddExpensePayload) bool {
 	}
 	Tx.Commit()
 	return true
+}
+
+func GetNetExpenseDetailsForAUserForAGroup(payload models.ExpenseDetailsUserGroupPayload) (float64, error) {
+	var balance float64
+
+	// Start a transaction (to ensure consistency if needed)
+	tx, err := db.Begin()
+	if err != nil {
+		logrus.Error("Error starting transaction: ", err)
+		return 0.0, errors.New("failed to start transaction")
+	}
+	defer tx.Rollback() // Ensure rollback in case of failure
+
+	// Call the stored procedure to set @balance
+	_, err = tx.Exec("CALL GetUserBalance(?, ?, @balance)", payload.UserID, payload.GroupId)
+	if err != nil {
+		logrus.Error("Error calling GetUserBalance SP: ", err)
+		return 0.0, errors.New("calling GetUserBalance SP failed")
+	}
+
+	// Retrieve the value of @balance
+	err = tx.QueryRow("SELECT @balance").Scan(&balance)
+	if err != nil {
+		logrus.Error("Error scanning balance: ", err)
+		return 0.0, errors.New("GetUserBalance SP passed, but could not retrieve the value")
+	}
+
+	// Commit the transaction (if no errors)
+	if err := tx.Commit(); err != nil {
+		logrus.Error("Error committing transaction: ", err)
+		return 0.0, errors.New("failed to commit transaction")
+	}
+
+	return balance, nil
 }
 
 func logErrorAndRollBack(err error, TransactionInstance *sql.Tx) bool {
